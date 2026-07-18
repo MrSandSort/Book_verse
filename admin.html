@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Verses — Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+:root{
+  --leather: #2b1c14;
+  --leather-dark: #170e08;
+  --leather-light: #3d281a;
+  --gold: #c9a15a;
+  --gold-bright: #e0bd7d;
+  --gold-dim: #8a6d3f;
+  --paper: #f4ead0;
+  --paper-2: #ecdfc0;
+  --paper-shadow: #d9c9a0;
+  --ink: #2c2015;
+  --ink-soft: #5a4a35;
+  --maroon: #7a2622;
+  --maroon-dark: #591c19;
+}
+
+*{ box-sizing:border-box; }
+
+html,body{
+  margin:0; padding:0; min-height:100%;
+  background:
+    radial-gradient(ellipse 1200px 900px at 50% 0%, #3a2a1d 0%, #201409 55%, #0d0805 100%);
+  font-family:'EB Garamond', serif;
+  color:var(--ink);
+}
+
+body{ padding:48px 20px 80px; }
+
+.wrap{ max-width:760px; margin:0 auto; }
+
+.masthead{ text-align:center; margin-bottom:36px; }
+.masthead .eyebrow{
+  font-variant:small-caps; letter-spacing:.3em; font-size:13px;
+  color:var(--gold-dim); margin-bottom:6px;
+}
+.masthead h1{
+  font-family:'Cormorant Garamond', serif; font-weight:600;
+  font-size:clamp(32px,5vw,46px); color:var(--gold-bright); margin:0;
+  text-shadow:0 1px 0 rgba(255,222,170,.2), 0 2px 14px rgba(0,0,0,.5);
+}
+.masthead .sub{ font-style:italic; color:#d8c39a; font-size:14px; margin-top:8px; }
+
+.panel{
+  background:var(--paper);
+  border-radius:6px;
+  padding:34px 36px;
+  box-shadow:0 20px 44px rgba(0,0,0,.45), 0 4px 12px rgba(0,0,0,.3);
+  margin-bottom:28px;
+}
+.panel h2{
+  font-family:'Cormorant Garamond', serif; font-weight:600; font-size:22px;
+  margin:0 0 18px; color:var(--ink);
+}
+
+label{
+  display:block; font-variant:small-caps; letter-spacing:.14em; font-size:13px;
+  color:var(--ink-soft); margin:16px 0 6px;
+}
+label:first-of-type{ margin-top:0; }
+input[type=text], input[type=email], input[type=password], input[type=number], textarea{
+  width:100%; font-family:'EB Garamond', serif; font-size:16px; color:var(--ink);
+  background:var(--paper-2); border:1px solid var(--paper-shadow); border-radius:4px;
+  padding:10px 12px; outline:none;
+}
+textarea{ min-height:180px; line-height:1.6; resize:vertical; white-space:pre; }
+input:focus, textarea:focus{ border-color:var(--gold-dim); }
+.row{ display:flex; gap:16px; }
+.row > div{ flex:1; }
+
+.btn{
+  font-family:'EB Garamond', serif; font-variant:small-caps; letter-spacing:.16em; font-size:14px;
+  color:var(--leather-dark); background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+  border:1px solid rgba(0,0,0,.25); padding:10px 24px; border-radius:3px; cursor:pointer;
+  box-shadow:0 2px 0 var(--gold-dim); transition:transform .12s ease;
+}
+.btn:hover{ transform:translateY(-1px); }
+.btn:active{ transform:translateY(1px); box-shadow:0 1px 0 var(--gold-dim); }
+.btn:disabled{ opacity:.5; cursor:default; transform:none; }
+.btn.secondary{
+  background:transparent; color:var(--ink-soft); box-shadow:none;
+  border:1px solid rgba(90,74,53,.4);
+}
+.btn.danger{
+  background:transparent; color:var(--maroon); box-shadow:none;
+  border:1px solid rgba(122,38,34,.4);
+}
+.btn.small{ padding:5px 14px; font-size:12px; }
+
+.actions{ margin-top:22px; display:flex; gap:12px; align-items:center; }
+
+.msg{ font-style:italic; font-size:14px; margin-top:14px; }
+.msg.error{ color:var(--maroon); }
+.msg.ok{ color:#3d5a2c; }
+
+.top-bar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.top-bar .who{ font-style:italic; color:var(--ink-soft); font-size:14px; }
+
+.poem-list{ list-style:none; margin:0; padding:0; }
+.poem-list li{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  padding:12px 0; border-bottom:1px dotted rgba(90,74,53,.3);
+}
+.poem-list li:last-child{ border-bottom:none; }
+.poem-info{ min-width:0; }
+.poem-info .t{
+  font-family:'Cormorant Garamond', serif; font-weight:600; font-size:18px; color:var(--ink);
+}
+.poem-info .m{ font-style:italic; color:var(--ink-soft); font-size:13px; }
+.poem-btns{ display:flex; gap:8px; flex:0 0 auto; }
+
+.hidden{ display:none !important; }
+
+#config-warning{
+  background:#3a1c1c; color:#f4d9d9; border:1px solid #7a2622; border-radius:6px;
+  padding:16px 20px; margin-bottom:24px; font-size:14px; line-height:1.6;
+}
+#config-warning code{ background:rgba(0,0,0,.25); padding:1px 6px; border-radius:3px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="masthead">
+    <div class="eyebrow">verses</div>
+    <h1>the writing desk</h1>
+    <div class="sub">private — for the keeper of the book only</div>
+  </div>
+
+  <div id="config-warning" class="hidden">
+    Missing configuration. Copy <code>js/config.example.js</code> to <code>js/config.js</code>
+    and fill in your Supabase project URL and anon key, then reload this page.
+  </div>
+
+  <!-- Login panel -->
+  <div class="panel" id="login-panel">
+    <h2>Sign in</h2>
+    <label for="email">Email</label>
+    <input type="email" id="email" autocomplete="username">
+    <label for="password">Password</label>
+    <input type="password" id="password" autocomplete="current-password">
+    <div class="actions">
+      <button class="btn" id="login-btn">Sign in</button>
+    </div>
+    <div class="msg error hidden" id="login-msg"></div>
+  </div>
+
+  <!-- Admin panel (shown once signed in) -->
+  <div id="admin-area" class="hidden">
+    <div class="top-bar">
+      <div class="who" id="who"></div>
+      <button class="btn secondary small" id="logout-btn">Sign out</button>
+    </div>
+
+    <div class="panel">
+      <h2 id="form-heading">Add a poem</h2>
+      <input type="hidden" id="poem-id">
+      <label for="f-title">Title</label>
+      <input type="text" id="f-title">
+      <div class="row">
+        <div>
+          <label for="f-character">Character / theme</label>
+          <input type="text" id="f-character" placeholder="e.g. The Keeper">
+        </div>
+        <div style="max-width:160px;">
+          <label for="f-sort">Sort order</label>
+          <input type="number" id="f-sort" value="1">
+        </div>
+      </div>
+      <label for="f-body">Poem</label>
+      <textarea id="f-body" placeholder="Line breaks are kept exactly as typed."></textarea>
+      <div class="actions">
+        <button class="btn" id="save-btn">Save poem</button>
+        <button class="btn secondary hidden" id="cancel-edit-btn">Cancel edit</button>
+      </div>
+      <div class="msg hidden" id="form-msg"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Poems in the book</h2>
+      <ul class="poem-list" id="poem-list"></ul>
+      <div class="msg" id="list-msg" style="color:var(--ink-soft);">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+const loginPanel = document.getElementById('login-panel');
+const adminArea = document.getElementById('admin-area');
+const configWarning = document.getElementById('config-warning');
+const loginMsg = document.getElementById('login-msg');
+const formMsg = document.getElementById('form-msg');
+const listMsg = document.getElementById('list-msg');
+const poemListEl = document.getElementById('poem-list');
+const whoEl = document.getElementById('who');
+const formHeading = document.getElementById('form-heading');
+const cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+function showMsg(el, text, ok){
+  el.textContent = text;
+  el.classList.remove('hidden','error','ok');
+  el.classList.add(ok ? 'ok' : 'error');
+}
+function hideMsg(el){ el.classList.add('hidden'); }
+
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+if(!window.verses || window.verses.configError || !window.verses.supabase){
+  configWarning.classList.remove('hidden');
+  loginPanel.classList.add('hidden');
+} else {
+  init();
+}
+
+async function init(){
+  const sb = window.verses.supabase;
+
+  document.getElementById('login-btn').addEventListener('click', async ()=>{
+    hideMsg(loginMsg);
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    if(!email || !password){
+      showMsg(loginMsg, 'Enter both an email and a password.');
+      return;
+    }
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if(error){
+      showMsg(loginMsg, error.message);
+      return;
+    }
+    onSignedIn();
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async ()=>{
+    await sb.auth.signOut();
+    location.reload();
+  });
+
+  cancelEditBtn.addEventListener('click', resetForm);
+
+  document.getElementById('save-btn').addEventListener('click', savePoem);
+
+  const { data: { session } } = await sb.auth.getSession();
+  if(session){
+    onSignedIn(session);
+  }
+}
+
+async function onSignedIn(session){
+  const sb = window.verses.supabase;
+  if(!session){
+    const { data } = await sb.auth.getSession();
+    session = data.session;
+  }
+  loginPanel.classList.add('hidden');
+  adminArea.classList.remove('hidden');
+  whoEl.textContent = session && session.user ? `signed in as ${session.user.email}` : '';
+  loadPoems();
+}
+
+function resetForm(){
+  document.getElementById('poem-id').value = '';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-character').value = '';
+  document.getElementById('f-sort').value = '1';
+  document.getElementById('f-body').value = '';
+  formHeading.textContent = 'Add a poem';
+  cancelEditBtn.classList.add('hidden');
+  hideMsg(formMsg);
+}
+
+async function loadPoems(){
+  const sb = window.verses.supabase;
+  listMsg.classList.remove('hidden');
+  listMsg.textContent = 'Loading…';
+  poemListEl.innerHTML = '';
+
+  const { data, error } = await sb.from('poems').select('*').order('sort_order', { ascending: true });
+  if(error){
+    listMsg.textContent = 'Could not load poems: ' + error.message;
+    return;
+  }
+  if(!data || data.length === 0){
+    listMsg.textContent = 'No poems yet — add the first one above.';
+    return;
+  }
+  listMsg.classList.add('hidden');
+
+  poemListEl.innerHTML = data.map(p => `
+    <li data-id="${p.id}">
+      <div class="poem-info">
+        <div class="t">${escapeHtml(p.title)}</div>
+        <div class="m">${escapeHtml(p.character_tag)} · order ${escapeHtml(p.sort_order)}</div>
+      </div>
+      <div class="poem-btns">
+        <button class="btn secondary small" data-action="edit">Edit</button>
+        <button class="btn danger small" data-action="delete">Delete</button>
+      </div>
+    </li>
+  `).join('');
+
+  poemListEl.querySelectorAll('li').forEach(li=>{
+    const id = li.dataset.id;
+    const poem = data.find(p => p.id === id);
+    li.querySelector('[data-action="edit"]').addEventListener('click', ()=> editPoem(poem));
+    li.querySelector('[data-action="delete"]').addEventListener('click', ()=> deletePoem(poem));
+  });
+}
+
+function editPoem(poem){
+  document.getElementById('poem-id').value = poem.id;
+  document.getElementById('f-title').value = poem.title;
+  document.getElementById('f-character').value = poem.character_tag;
+  document.getElementById('f-sort').value = poem.sort_order;
+  document.getElementById('f-body').value = poem.body;
+  formHeading.textContent = 'Edit poem';
+  cancelEditBtn.classList.remove('hidden');
+  hideMsg(formMsg);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function deletePoem(poem){
+  if(!confirm(`Delete "${poem.title}"? This cannot be undone.`)) return;
+  const sb = window.verses.supabase;
+  const { error } = await sb.from('poems').delete().eq('id', poem.id);
+  if(error){
+    alert('Could not delete: ' + error.message);
+    return;
+  }
+  loadPoems();
+}
+
+async function savePoem(){
+  const sb = window.verses.supabase;
+  const id = document.getElementById('poem-id').value;
+  const title = document.getElementById('f-title').value.trim();
+  const character_tag = document.getElementById('f-character').value.trim();
+  const sort_order = parseInt(document.getElementById('f-sort').value, 10) || 0;
+  const body = document.getElementById('f-body').value;
+
+  if(!title || !character_tag || !body.trim()){
+    showMsg(formMsg, 'Title, character/theme, and poem text are all required.');
+    return;
+  }
+
+  const payload = { title, character_tag, sort_order, body };
+  let error;
+  if(id){
+    ({ error } = await sb.from('poems').update(payload).eq('id', id));
+  } else {
+    ({ error } = await sb.from('poems').insert(payload));
+  }
+
+  if(error){
+    showMsg(formMsg, error.message);
+    return;
+  }
+
+  showMsg(formMsg, id ? 'Poem updated.' : 'Poem added.', true);
+  resetForm();
+  loadPoems();
+}
+</script>
+</body>
+</html>

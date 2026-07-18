@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sandesh's Verses — A Book of Poems</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+:root{
+  --leather: #2b1c14;
+  --leather-dark: #170e08;
+  --leather-light: #3d281a;
+  --gold: #c9a15a;
+  --gold-bright: #e0bd7d;
+  --gold-dim: #8a6d3f;
+  --paper: #f4ead0;
+  --paper-2: #ecdfc0;
+  --paper-shadow: #d9c9a0;
+  --ink: #2c2015;
+  --ink-soft: #5a4a35;
+  --maroon: #7a2622;
+  --maroon-dark: #591c19;
+}
+
+*{ box-sizing:border-box; }
+
+html,body{
+  margin:0; padding:0; height:100%;
+  background:
+    radial-gradient(ellipse 900px 700px at 50% 45%, #3a2a1d 0%, #201409 60%, #0d0805 100%);
+  overflow:hidden;
+  font-family:'EB Garamond', serif;
+  color:var(--ink);
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:2600px;
+}
+
+/* ---------- Cover screen ---------- */
+#cover-screen{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.05), transparent 55%),
+    linear-gradient(135deg, var(--leather-light) 0%, var(--leather) 45%, var(--leather-dark) 100%);
+  z-index:50;
+  transform-style:preserve-3d;
+  transform-origin:left center;
+  transition:transform 1.7s cubic-bezier(.6,.05,.4,1), opacity 1.7s ease .15s;
+}
+#cover-screen.opened{
+  transform:rotateY(-108deg);
+  opacity:0;
+  pointer-events:none;
+}
+#cover-screen::before{
+  content:'';
+  position:absolute; inset:14px;
+  border:1px solid rgba(201,161,90,.55);
+  box-shadow: inset 0 0 0 1px rgba(201,161,90,.2), inset 0 0 40px rgba(0,0,0,.4);
+  pointer-events:none;
+}
+#cover-screen::after{
+  content:'';
+  position:absolute; left:0; top:0; bottom:0; width:34px;
+  background:linear-gradient(90deg, rgba(0,0,0,.55), transparent);
+}
+
+.cover-inner{
+  position:relative; z-index:3;
+  text-align:center;
+  color:var(--gold-bright);
+  padding:40px;
+}
+
+.cover-eyebrow{
+  opacity:0;
+  animation:cover-fade-up .9s ease .15s forwards;
+}
+@keyframes cover-fade-up{
+  from{ opacity:0; transform:translateY(10px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+/* ---------- Quill writes the title ---------- */
+.quill-title-wrap{
+  position:relative;
+  display:inline-block;
+}
+.cover-title{
+  display:inline-block;
+  clip-path:inset(0 100% 0 0);
+  animation:quill-write 2.3s cubic-bezier(.65,.05,.32,1) .6s forwards;
+}
+@keyframes quill-write{
+  0%{ clip-path:inset(0 100% 0 0); }
+  100%{ clip-path:inset(0 0 0 0); }
+}
+.quill-pen{
+  position:absolute;
+  top:48%; left:-4%;
+  width:clamp(24px,4vw,38px);
+  height:clamp(24px,4vw,38px);
+  opacity:0;
+  animation:quill-glide 2.3s cubic-bezier(.65,.05,.32,1) .6s forwards;
+}
+.quill-pen svg{ display:block; width:100%; height:100%; overflow:visible; }
+.quill-pen-bob{
+  animation:quill-bob .32s ease-in-out .6s 8;
+  transform-origin:80% 85%;
+}
+@keyframes quill-glide{
+  0%{ left:-4%; opacity:0; transform:translateY(-50%); }
+  6%{ opacity:1; }
+  90%{ opacity:1; }
+  100%{ left:98%; opacity:0; transform:translateY(-50%); }
+}
+@keyframes quill-bob{
+  0%,100%{ transform:rotate(-38deg); }
+  50%{ transform:rotate(-30deg) translateY(-2px); }
+}
+
+.cover-flourish{
+  margin:22px auto; width:120px; opacity:0;
+  animation:cover-fade-up .9s ease 3.05s forwards;
+}
+.cover-sub{
+  font-family:'Cormorant Garamond', serif;
+  font-style:italic;
+  font-size:19px;
+  color:#d8c39a;
+  margin-bottom:38px;
+  opacity:0;
+  animation:cover-fade-up .9s ease 3.3s forwards;
+}
+#open-btn{
+  opacity:0;
+  animation:cover-fade-up .9s ease 3.55s forwards;
+}
+.cover-eyebrow{
+  font-family:'EB Garamond',serif;
+  font-variant:small-caps;
+  letter-spacing:.35em;
+  font-size:14px;
+  color:var(--gold-dim);
+  margin-bottom:18px;
+}
+.cover-title{
+  font-family:'Cormorant Garamond', serif;
+  font-weight:600;
+  font-size:clamp(48px,9vw,86px);
+  letter-spacing:.06em;
+  margin:0;
+  text-shadow:0 1px 0 rgba(255,222,170,.25), 0 2px 18px rgba(0,0,0,.5);
+}
+#open-btn{
+  font-family:'EB Garamond', serif;
+  font-variant:small-caps;
+  letter-spacing:.2em;
+  font-size:16px;
+  color:var(--leather-dark);
+  background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+  border:1px solid rgba(0,0,0,.25);
+  padding:12px 34px;
+  border-radius:2px;
+  cursor:pointer;
+  box-shadow:0 3px 0 var(--gold-dim), 0 6px 16px rgba(0,0,0,.4);
+  transition:transform .15s ease;
+}
+#open-btn:hover{ transform:translateY(-1px); }
+#open-btn:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--gold-dim); }
+#open-btn:disabled{ cursor:default; opacity:.85; transform:none; }
+
+/* ---------- Book ---------- */
+#book-scene{
+  position:relative;
+  width:min(940px,94vw);
+  height:min(620px,82vh);
+}
+
+.book{
+  position:relative;
+  width:100%; height:100%;
+  display:flex;
+  background:var(--leather-dark);
+  border-radius:8px;
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.55),
+    0 8px 20px rgba(0,0,0,.4);
+  padding:16px;
+}
+
+.left-wrap, .right-wrap{
+  position:relative;
+  flex:1 1 50%;
+  min-width:0;
+}
+
+.page-face{
+  position:absolute; inset:0;
+  background:var(--paper);
+  overflow:hidden;
+  padding:42px 40px 46px;
+}
+.page-face::before{ /* paper grain */
+  content:'';
+  position:absolute; inset:0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(120,95,55,.035) 0px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(90deg, rgba(120,95,55,.02) 0px, transparent 1px, transparent 5px);
+  pointer-events:none;
+}
+.page-face::after{ /* vignette toward spine */
+  content:''; position:absolute; inset:0; pointer-events:none;
+}
+
+.left-wrap .page-face{ border-radius:3px 0 0 3px; }
+.left-wrap .page-face::after{ box-shadow: inset 16px 0 26px -18px rgba(0,0,0,.35); }
+.right-wrap .page-face{ border-radius:0 3px 3px 0; }
+.right-wrap .page-face::after{ box-shadow: inset -16px 0 26px -18px rgba(0,0,0,.35); }
+
+/* stacked page illusion behind each side */
+.left-wrap::before, .right-wrap::before{
+  content:''; position:absolute; top:3px; bottom:3px; background:var(--paper-shadow);
+  border-radius:3px;
+}
+.left-wrap::before{ left:-3px; right:2px; z-index:-1;}
+.right-wrap::before{ right:-3px; left:2px; z-index:-1;}
+
+.spine{
+  width:26px; flex:0 0 26px;
+  background:linear-gradient(90deg, #140c07, #241609 30%, #1a1108 60%, #140c07);
+  box-shadow: inset 0 0 14px rgba(0,0,0,.7);
+  position:relative;
+  z-index:5;
+}
+
+/* ---------- Content typography ---------- */
+.eyebrow{
+  font-family:'EB Garamond',serif;
+  font-variant:small-caps;
+  letter-spacing:.28em;
+  font-size:13px;
+  color:var(--ink-soft);
+  margin:0 0 10px;
+}
+.poem-title{
+  font-family:'Cormorant Garamond', serif;
+  font-weight:600;
+  font-size:clamp(26px,3.4vw,34px);
+  margin:0 0 6px;
+  color:var(--ink);
+  line-height:1.15;
+}
+.poem-meta{
+  font-family:'Cormorant Garamond', serif;
+  font-style:italic;
+  font-size:14px;
+  color:var(--ink-soft);
+  margin:0 0 22px;
+}
+.character-tag{
+  display:inline-block;
+  font-family:'EB Garamond', serif;
+  font-variant:small-caps;
+  letter-spacing:.16em;
+  font-size:12.5px;
+  color:var(--maroon);
+  border:1px solid rgba(122,38,34,.35);
+  border-radius:20px;
+  padding:3px 12px;
+  margin:0 0 16px;
+}
+.poem-body{
+  font-size:19px;
+  line-height:1.85;
+  white-space:pre-line;
+  color:var(--ink);
+  max-height:calc(100% - 130px);
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding-right:10px;
+  margin-right:-10px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--gold-dim) transparent;
+}
+.poem-body::-webkit-scrollbar{
+  width:6px;
+}
+.poem-body::-webkit-scrollbar-track{
+  background:transparent;
+}
+.poem-body::-webkit-scrollbar-thumb{
+  background:var(--gold-dim);
+  border-radius:3px;
+}
+.poem-body::-webkit-scrollbar-thumb:hover{
+  background:var(--maroon);
+}
+.poem-body::first-letter{
+  font-family:'Cormorant Garamond', serif;
+  font-weight:700;
+  font-size:2.6em;
+  color:var(--maroon);
+  float:left;
+  line-height:.8;
+  padding:.05em .08em 0 0;
+}
+.page-number{
+  position:absolute; bottom:16px;
+  font-family:'Cormorant Garamond', serif;
+  font-style:italic;
+  font-size:13px;
+  color:var(--gold-dim);
+  letter-spacing:.05em;
+}
+.left-wrap .page-number{ left:40px; }
+.right-wrap .page-number{ right:40px; }
+
+/* ---------- Title / contents page ---------- */
+.title-page{ display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; }
+.title-page h1{
+  font-family:'Cormorant Garamond', serif;
+  font-weight:600;
+  font-size:44px;
+  letter-spacing:.05em;
+  margin:0 0 4px;
+  color:var(--ink);
+}
+.title-page p.sub{
+  font-style:italic; color:var(--ink-soft); margin:0 0 22px; font-size:16px;
+}
+.flourish{ width:90px; opacity:.55; margin:6px 0 26px; }
+.contents-list{ list-style:none; padding:0; margin:0; width:100%; max-width:280px; }
+.contents-list li{
+  display:flex; justify-content:space-between; align-items:baseline;
+  font-size:16px; padding:7px 2px; border-bottom:1px dotted rgba(90,74,53,.35);
+  cursor:pointer; color:var(--ink-soft);
+  transition:color .15s ease;
+}
+.contents-list li:hover{ color:var(--maroon); }
+.contents-list li span.num{ font-style:italic; font-size:13px; }
+
+.cast-link{
+  margin-top:20px;
+  font-family:'EB Garamond', serif;
+  font-variant:small-caps;
+  letter-spacing:.14em;
+  font-size:13.5px;
+  color:var(--gold-dim);
+  cursor:pointer;
+  border-bottom:1px dotted var(--gold-dim);
+  padding-bottom:2px;
+}
+.cast-link:hover{ color:var(--maroon); border-color:var(--maroon); }
+
+.cast-page{ height:100%; display:flex; flex-direction:column; justify-content:center; }
+.cast-page h1{
+  font-family:'Cormorant Garamond', serif; font-weight:600; font-size:30px;
+  margin:0 0 4px; color:var(--ink); text-align:center;
+}
+.cast-page p.sub{ text-align:center; font-style:italic; color:var(--ink-soft); font-size:14px; margin:0 0 20px; }
+.character-block{ margin-bottom:16px; }
+.character-name{
+  font-family:'Cormorant Garamond', serif; font-weight:600; font-style:italic;
+  font-size:18px; color:var(--maroon); margin:0 0 6px;
+  cursor:pointer;
+}
+.character-name:hover{ text-decoration:underline; }
+.character-poems{ list-style:none; margin:0 0 6px; padding:0 0 0 4px; }
+.character-poems li{
+  font-size:14.5px; color:var(--ink-soft); padding:3px 0; cursor:pointer;
+}
+.character-poems li:hover{ color:var(--maroon); }
+.back-to-book{
+  margin-top:auto; align-self:center;
+  font-family:'EB Garamond', serif; font-variant:small-caps; letter-spacing:.14em;
+  font-size:13.5px; color:var(--gold-dim); cursor:pointer;
+  border-top:1px dotted rgba(90,74,53,.35); padding-top:12px; width:100%; text-align:center;
+}
+.back-to-book:hover{ color:var(--maroon); }
+
+.endnote{
+  position:absolute; bottom:44px; left:0; right:0; text-align:center;
+  font-size:12.5px; color:var(--gold-dim); font-variant:small-caps; letter-spacing:.12em;
+}
+.endnote button{
+  font:inherit; color:var(--gold-dim); background:none; border:1px dashed var(--gold-dim);
+  padding:6px 14px; border-radius:20px; cursor:not-allowed; opacity:.7;
+}
+
+.the-end{ display:flex; align-items:center; justify-content:center; height:100%; flex-direction:column; }
+.the-end span{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:30px; color:var(--ink-soft); }
+
+/* ---------- Flip leaves ---------- */
+.flip-leaf{
+  position:absolute; inset:0;
+  transform-style:preserve-3d;
+  transition:transform .95s cubic-bezier(.45,.05,.18,1);
+  z-index:10;
+}
+.right-wrap .flip-leaf{ transform-origin:left center; }
+.left-wrap .flip-leaf{ transform-origin:right center; }
+
+.flip-leaf .face{
+  position:absolute; inset:0;
+  backface-visibility:hidden;
+  background:var(--paper);
+  padding:42px 40px 46px;
+  overflow:hidden;
+}
+.flip-leaf .face.back{
+  transform:rotateY(180deg);
+  background:linear-gradient(135deg, var(--paper-2), var(--paper-shadow));
+}
+.flip-leaf .face.back::before{
+  content:''; position:absolute; inset:0;
+  background-image:repeating-linear-gradient(0deg, rgba(120,95,55,.04) 0px, transparent 1px, transparent 3px);
+}
+.right-wrap .flip-leaf .face{ border-radius:0 3px 3px 0; }
+.left-wrap .flip-leaf .face{ border-radius:3px 0 0 3px; }
+
+.flip-leaf .face.front::after{
+  content:''; position:absolute; inset:0; opacity:0; transition:opacity .95s ease; pointer-events:none;
+}
+.right-wrap .flip-leaf .face.front::after{ background:linear-gradient(to left, rgba(0,0,0,.32), transparent 45%); }
+.left-wrap .flip-leaf .face.front::after{ background:linear-gradient(to right, rgba(0,0,0,.32), transparent 45%); }
+.flip-leaf.turning .face.front::after{ opacity:1; }
+
+.right-wrap .flip-leaf.turning{ transform:rotateY(-178deg); }
+.left-wrap .flip-leaf.turning{ transform:rotateY(178deg); }
+
+.drop-shadow{
+  position:absolute; inset:0; z-index:6; pointer-events:none;
+  opacity:0; transition:opacity .95s ease;
+}
+.right-wrap .drop-shadow{ background:radial-gradient(ellipse at left, rgba(0,0,0,.35), transparent 60%); }
+.left-wrap .drop-shadow{ background:radial-gradient(ellipse at right, rgba(0,0,0,.35), transparent 60%); }
+.drop-shadow.show{ opacity:1; }
+
+/* ---------- Ribbon bookmark ---------- */
+#ribbon{
+  position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+  width:22px; height:60px;
+  background:linear-gradient(180deg, var(--maroon), var(--maroon-dark));
+  box-shadow:0 4px 10px rgba(0,0,0,.4);
+  z-index:20;
+  clip-path:polygon(0 0,100% 0,100% 78%,50% 100%,0 78%);
+  transition:top .5s ease;
+}
+
+/* ---------- Nav ---------- */
+#nav{
+  position:absolute; bottom:-56px; left:0; right:0;
+  display:flex; align-items:center; justify-content:center; gap:26px;
+  z-index:15;
+}
+.nav-btn{
+  font-family:'Cormorant Garamond', serif;
+  font-size:15px; font-variant:small-caps; letter-spacing:.14em;
+  color:var(--gold-bright);
+  background:transparent;
+  border:1px solid rgba(201,161,90,.5);
+  padding:9px 20px;
+  border-radius:20px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.nav-btn:hover:not(:disabled){ background:rgba(201,161,90,.15); color:#fff; }
+.nav-btn:disabled{ opacity:.3; cursor:default; }
+#nav-count{
+  font-family:'Cormorant Garamond', serif; font-style:italic;
+  color:#d8c39a; font-size:15px; letter-spacing:.05em; min-width:70px; text-align:center;
+}
+
+@media (max-width:720px){
+  #book-scene{ height:min(560px,74vh); }
+  .left-wrap, .spine{ display:none; }
+  .right-wrap{ flex:1 1 100%; }
+  .right-wrap .page-face, .right-wrap .flip-leaf .face{ border-radius:6px; }
+  .page-face{ padding:34px 26px 40px; }
+  .poem-body{ font-size:17px; }
+  #ribbon{ display:none; }
+}
+</style>
+</head>
+<body>
+
+<div id="cover-screen">
+  <div class="cover-inner">
+    <div class="cover-eyebrow">a collection of poems</div>
+    <div class="quill-title-wrap">
+      <h1 class="cover-title">Sandesh's Verses</h1>
+      <div class="quill-pen" aria-hidden="true">
+        <div class="quill-pen-bob">
+          <svg viewBox="0 0 40 40">
+            <path d="M6 34 L27 13" stroke="#3d281a" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M27 13 C24 6 29 2 36 4 C33 9 32 14 27 13 Z" fill="#e0bd7d" stroke="#8a6d3f" stroke-width="1"/>
+            <path d="M27 13 C21 9 15 10 10 16 C16 15 21 15 27 13 Z" fill="#c9a15a" stroke="#8a6d3f" stroke-width="1"/>
+            <circle cx="6" cy="34" r="1.6" fill="#7a2622"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <svg class="cover-flourish" viewBox="0 0 120 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 10 H45 M75 10 H120" stroke="currentColor" stroke-width="1"/>
+      <circle cx="60" cy="10" r="4" stroke="currentColor" stroke-width="1"/>
+      <path d="M52 10 L45 10 M68 10 L75 10" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <p class="cover-sub">poems, threaded by character</p>
+    <button id="open-btn">Open the Book</button>
+  </div>
+</div>
+
+<div id="book-scene">
+  <div class="book">
+    <div class="left-wrap">
+      <div class="page-face" id="left-static"></div>
+      <div class="flip-leaf" id="left-flip">
+        <div class="face front" id="left-flip-front"></div>
+        <div class="face back"></div>
+      </div>
+      <div class="drop-shadow" id="left-shadow"></div>
+      <div class="page-number" id="left-page-num"></div>
+    </div>
+
+    <div class="spine">
+      <div id="ribbon"></div>
+    </div>
+
+    <div class="right-wrap">
+      <div class="page-face" id="right-static"></div>
+      <div class="flip-leaf" id="right-flip">
+        <div class="face front" id="right-flip-front"></div>
+        <div class="face back"></div>
+      </div>
+      <div class="drop-shadow" id="right-shadow"></div>
+      <div class="page-number" id="right-page-num"></div>
+    </div>
+
+    <div id="nav">
+      <button class="nav-btn" id="prev-btn">‹ Prev</button>
+      <div id="nav-count"></div>
+      <button class="nav-btn" id="next-btn">Next ›</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+let poems = null; // null = loading, [] = loaded but empty, Array = loaded with data
+let loadError = false;
+
+const romanNums = ["","i","ii","iii","iv","v","vi","vii","viii","ix","x","xi","xii"];
+function roman(n){ return romanNums[n] || n; }
+
+let current = 0; // index of poem shown on the right page
+let animating = false;
+let castMode = false;
+let selectedCharacter = null;
+const navEl = document.getElementById('nav');
+
+const leftStatic = document.getElementById('left-static');
+const rightStatic = document.getElementById('right-static');
+const leftFlip = document.getElementById('left-flip');
+const rightFlip = document.getElementById('right-flip');
+const leftFlipFront = document.getElementById('left-flip-front');
+const rightFlipFront = document.getElementById('right-flip-front');
+const leftShadow = document.getElementById('left-shadow');
+const rightShadow = document.getElementById('right-shadow');
+const leftPageNum = document.getElementById('left-page-num');
+const rightPageNum = document.getElementById('right-page-num');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const navCount = document.getElementById('nav-count');
+const ribbon = document.getElementById('ribbon');
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function poemMarkup(p, idx){
+  return `<div class="eyebrow">${roman(idx+1)}.</div>
+          <h2 class="poem-title">${escapeHtml(p.title)}</h2>
+          <div class="character-tag">${escapeHtml(p.character_tag)}</div>
+          <div class="poem-body">${escapeHtml(p.body)}</div>`;
+}
+
+function uniqueCharacters(){
+  return [...new Set(poems.map(p => p.character_tag))];
+}
+
+function loadingMarkup(){
+  return `<div class="title-page">
+    <p class="sub">a collection of poems</p>
+    <h1>Sandesh's Verses</h1>
+    <svg class="flourish" viewBox="0 0 120 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 10 H45 M75 10 H120" stroke="currentColor" stroke-width="1"/>
+      <circle cx="60" cy="10" r="3" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <p class="sub" style="margin-top:6px;">the pages are turning into view&hellip;</p>
+  </div>`;
+}
+
+function emptyMarkup(){
+  return `<div class="title-page">
+    <p class="sub">a collection of poems</p>
+    <h1>Sandesh's Verses</h1>
+    <svg class="flourish" viewBox="0 0 120 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 10 H45 M75 10 H120" stroke="currentColor" stroke-width="1"/>
+      <circle cx="60" cy="10" r="3" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <p class="sub" style="margin-top:6px;">these pages are still blank —<br>no poems have been written yet.</p>
+  </div>`;
+}
+
+function errorMarkup(){
+  return `<div class="title-page">
+    <p class="sub">a collection of poems</p>
+    <h1>Sandesh's Verses</h1>
+    <svg class="flourish" viewBox="0 0 120 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 10 H45 M75 10 H120" stroke="currentColor" stroke-width="1"/>
+      <circle cx="60" cy="10" r="3" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <p class="sub" style="margin-top:6px;">the book could not be reached.<br>check your connection and try again.</p>
+  </div>`;
+}
+
+function contentsMarkup(){
+  const items = poems.map((p,i)=>`<li data-i="${i}"><span>${escapeHtml(p.title)}</span><span class="num">${roman(i+1)}</span></li>`).join('');
+  return `<div class="title-page">
+    <p class="sub">a collection of poems</p>
+    <h1>Sandesh's Verses</h1>
+    <svg class="flourish" viewBox="0 0 120 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 10 H45 M75 10 H120" stroke="currentColor" stroke-width="1"/>
+      <circle cx="60" cy="10" r="3" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <ul class="contents-list">${items}</ul>
+    <div class="cast-link" id="cast-link">↳ view by character</div>
+  </div>
+  <div class="endnote"><button disabled title="Coming soon">＋ write a new poem</button></div>`;
+}
+
+function endMarkup(){
+  return `<div class="the-end"><span>Fin.</span></div>`;
+}
+
+function castLeftMarkup(){
+  const chars = uniqueCharacters();
+  if(!selectedCharacter) selectedCharacter = chars[0];
+  const blocks = chars.map(c => `<div class="character-block"><h3 class="character-name" data-char="${escapeHtml(c)}">${escapeHtml(c)}</h3></div>`).join('');
+  return `<div class="cast-page">
+    <p class="sub">a book of threads</p>
+    <h1>Cast &amp; Themes</h1>
+    ${blocks}
+  </div>`;
+}
+
+function castRightMarkup(){
+  const chars = uniqueCharacters();
+  if(!selectedCharacter) selectedCharacter = chars[0];
+  const entries = poems
+    .map((p, i) => ({ p, i }))
+    .filter(x => x.p.character_tag === selectedCharacter);
+  const items = entries
+    .map(x => `<li data-i="${x.i}">${escapeHtml(x.p.title)} <span style="font-style:italic;opacity:.6;">— ${roman(x.i+1)}</span></li>`)
+    .join('');
+  return `<div class="cast-page">
+    <p class="sub">appearances of</p>
+    <h1>${escapeHtml(selectedCharacter)}</h1>
+    <ul class="character-poems">${items}</ul>
+    <div class="back-to-book" id="back-to-book">← back to the book</div>
+  </div>`;
+}
+
+function leftContentFor(i){
+  return i === 0 ? contentsMarkup() : poemMarkup(poems[i-1], i-1);
+}
+function rightContentFor(i){
+  return i < poems.length ? poemMarkup(poems[i], i) : endMarkup();
+}
+
+function render(){
+  if(loadError){
+    navEl.style.display = 'none';
+    leftStatic.innerHTML = errorMarkup();
+    rightStatic.innerHTML = '';
+    leftFlipFront.innerHTML = leftStatic.innerHTML;
+    rightFlipFront.innerHTML = '';
+    leftPageNum.textContent = ''; rightPageNum.textContent = '';
+    return;
+  }
+  if(poems === null){
+    navEl.style.display = 'none';
+    leftStatic.innerHTML = loadingMarkup();
+    rightStatic.innerHTML = '';
+    leftFlipFront.innerHTML = leftStatic.innerHTML;
+    rightFlipFront.innerHTML = '';
+    leftPageNum.textContent = ''; rightPageNum.textContent = '';
+    return;
+  }
+  if(poems.length === 0 && current === 0){
+    navEl.style.display = 'none';
+    leftStatic.innerHTML = emptyMarkup();
+    rightStatic.innerHTML = endMarkup();
+    leftFlipFront.innerHTML = leftStatic.innerHTML;
+    rightFlipFront.innerHTML = rightStatic.innerHTML;
+    leftPageNum.textContent = ''; rightPageNum.textContent = '';
+    return;
+  }
+  navEl.style.display = 'flex';
+  leftStatic.innerHTML = leftContentFor(current);
+  rightStatic.innerHTML = rightContentFor(current);
+  leftFlipFront.innerHTML = leftStatic.innerHTML;
+  rightFlipFront.innerHTML = rightStatic.innerHTML;
+
+  leftPageNum.textContent = current === 0 ? '' : roman(current);
+  rightPageNum.textContent = current < poems.length ? roman(current+1) : '';
+
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current >= poems.length;
+  navCount.textContent = current < poems.length
+    ? `${roman(current+1)} of ${roman(poems.length)}`
+    : 'the end';
+
+  const travel = 460; // px range for ribbon travel inside spine
+  const progress = poems.length > 0 ? current / poems.length : 0;
+  ribbon.style.top = (-6 + progress * travel) + 'px';
+
+  attachContentsHandlers();
+}
+
+function attachContentsHandlers(){
+  document.querySelectorAll('.contents-list li').forEach(li=>{
+    li.onclick = ()=>{
+      if(animating) return;
+      const idx = parseInt(li.dataset.i, 10);
+      current = idx;
+      render();
+    };
+  });
+  const castLink = document.getElementById('cast-link');
+  if(castLink) castLink.onclick = enterCast;
+}
+
+function enterCast(){
+  if(animating) return;
+  castMode = true;
+  selectedCharacter = null;
+  renderCast();
+}
+
+function exitCast(jumpIndex){
+  castMode = false;
+  if(jumpIndex !== null && jumpIndex !== undefined) current = jumpIndex;
+  render();
+}
+
+function renderCast(){
+  navEl.style.display = 'none';
+  leftStatic.innerHTML = castLeftMarkup();
+  rightStatic.innerHTML = castRightMarkup();
+  leftPageNum.textContent = '';
+  rightPageNum.textContent = '';
+  attachCastHandlers();
+}
+
+function attachCastHandlers(){
+  document.querySelectorAll('.character-name').forEach(el=>{
+    el.onclick = ()=>{
+      selectedCharacter = el.dataset.char;
+      rightStatic.innerHTML = castRightMarkup();
+      attachCastHandlers();
+    };
+  });
+  document.querySelectorAll('.character-poems li').forEach(li=>{
+    li.onclick = ()=>{
+      const idx = parseInt(li.dataset.i, 10);
+      exitCast(idx);
+    };
+  });
+  const back = document.getElementById('back-to-book');
+  if(back) back.onclick = ()=> exitCast(null);
+}
+
+function next(){
+  if(animating || castMode || current >= poems.length) return;
+  animating = true;
+  rightStatic.innerHTML = current + 1 < poems.length ? poemMarkup(poems[current+1], current+1) : endMarkup();
+  rightShadow.classList.add('show');
+  rightFlip.classList.add('turning');
+  setTimeout(()=>{
+    current += 1;
+    rightFlip.classList.remove('turning');
+    rightFlip.style.transition = 'none';
+    rightFlip.offsetHeight; // reflow
+    rightFlip.style.transition = '';
+    rightShadow.classList.remove('show');
+    render();
+    animating = false;
+  }, 950);
+}
+
+function prev(){
+  if(animating || castMode || current <= 0) return;
+  animating = true;
+  leftStatic.innerHTML = current - 1 === 0 ? contentsMarkup() : poemMarkup(poems[current-2], current-2);
+  attachContentsHandlers();
+  leftShadow.classList.add('show');
+  leftFlip.classList.add('turning');
+  setTimeout(()=>{
+    current -= 1;
+    leftFlip.classList.remove('turning');
+    leftFlip.style.transition = 'none';
+    leftFlip.offsetHeight;
+    leftFlip.style.transition = '';
+    leftShadow.classList.remove('show');
+    render();
+    animating = false;
+  }, 950);
+}
+
+nextBtn.addEventListener('click', next);
+prevBtn.addEventListener('click', prev);
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight') next();
+  if(e.key === 'ArrowLeft') prev();
+});
+
+document.getElementById('open-btn').addEventListener('click', (e)=>{
+  const btn = e.currentTarget;
+  if(btn.disabled) return;
+  btn.disabled = true;
+  document.getElementById('cover-screen').classList.add('opened');
+});
+
+async function loadPoems(){
+  render(); // shows the loading state (poems is still null)
+
+  if(!window.verses || window.verses.configError || !window.verses.supabase){
+    loadError = true;
+    render();
+    return;
+  }
+
+  const { data, error } = await window.verses.supabase
+    .from('poems')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
+  if(error){
+    console.error('Verses: failed to load poems', error);
+    loadError = true;
+    poems = null;
+    render();
+    return;
+  }
+
+  poems = data || [];
+  loadError = false;
+  render();
+}
+
+loadPoems();
+</script>
+</body>
+</html>
